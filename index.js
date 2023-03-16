@@ -22,12 +22,11 @@ async function run() {
 
     app.post("/api/employees", async (req, res) => {
       try {
-        // Add a new Employee object to the 'employees' collection
+
         const employee = req.body;
         const db = client.db();
         const result = await db.collection("employees").insertOne(employee);
 
-        // Return success status and URL of created object
         res.status(201).location(`/api/employees/${result.insertedId}`).send();
       } catch (err) {
         console.error(err);
@@ -65,7 +64,6 @@ async function run() {
 
     app.put("/api/employees/:id", async (req, res) => {
       try {
-        // Find an Employee object with the given ID in the 'employees' collection
         const db = client.db();
         const employee = await db.collection("employees").findOne({ _id: ObjectId(req.params.id) });
 
@@ -73,16 +71,14 @@ async function run() {
           return res.status(404).send("Not found");
         }
 
-        // Update the Employee object with data from request body
         const updatedEmployee = { ...employee, ...req.body };
 
-        // Save the updated Employee object to the 'employees' collection
         await db.collection("employees").updateOne(
           { _id: ObjectId(req.params.id) },
           { $set: updatedEmployee }
         );
 
-        // Return success status and URL of updated object
+        
         res.location(`/api/employees/${req.params.id}`).send();
       } catch (err) {
         console.error(err);
@@ -94,11 +90,10 @@ async function run() {
 
     app.delete("/api/employees/:id", async (req, res) => {
       try {
-        // Find and delete an Employee object with the given ID from the 'employees' collection
+    
         const db = client.db();
         const result = await db.collection("employees").deleteOne({ _id: ObjectId(req.params.id) });
 
-        // If no Employee object was deleted, return 404 status code
         if (result.deletedCount === 0) {
           return res.status(404).send("Not found");
         }
